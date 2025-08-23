@@ -1,0 +1,63 @@
+<!-- templates/softdesk_support/home.html -->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>SoftDesk API</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+        }
+        h1 {
+            color: #444;
+            margin-bottom: 1rem;
+        }
+        ul {
+            padding-left: 1.2rem;
+        }
+        li {
+            margin: 0.5rem 0;
+        }
+        a {
+            text-decoration: none;
+            color: #007acc;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .note {
+            font-size: 0.85rem;
+            color: #777;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Bienvenue sur l’API SoftDesk</h1>
+        <p>Ce backend gère les projets, les bugs et les commentaires via Django REST.</p>
+        <ul>
+            <li><a href="/admin/">🎛️ Accès à l’interface Admin</a></li>
+            <li><a href="/docs/">📘 Documentation Swagger</a></li>
+            <li><a href="/redoc/">📕 Documentation ReDoc</a></li>
+            <li><a href="/api/auth/">🔐 Authentification</a></li>
+            <li><a href="/api/projects/">📁 Projets</a></li>
+            <li><a href="/api/issues/">🐞 Bugs / Tickets</a></li>
+            <li><a href="/api/comments/">💬 Commentaires</a></li>
+        </ul>
+        <p class="note">Accès à l'API réservé aux utilisateurs authentifiés via JWT 🔐</p>
+    </div>
+</body>
+</html>
