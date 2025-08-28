@@ -16,7 +16,6 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-
     # Auth/JWT
     path("api/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
