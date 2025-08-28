@@ -1,48 +1,42 @@
 from rest_framework import serializers
-from rest_framework.exceptions import PermissionDenied
 from .models import Issue
 from projects.models import Contributor
 
-_STATUS_ALLOWED = {"TODO", "IN_PROGRESS", "DONE"}
-_STATUS_ALIASES = {"to do": "TODO", "in progress": "IN_PROGRESS", "finished": "DONE", "done": "DONE"}
-
 class IssueSerializer(serializers.ModelSerializer):
-    author = serializers.ReadOnlyField(source="author.id")
+    author = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Issue
-        fields = ["id", "name", "description", "project", "author", "assignee",
-                  "priority", "tag", "status", "created_time"]
+        fields = [
+            "id", "project", "name", "description",
+            "priority", "tag", "status",
+            "assignee", "author", "created_time"
+        ]
         read_only_fields = ["id", "author", "created_time"]
-
-    def _normalize_status(self, val):
-        if val in _STATUS_ALLOWED:
-            return val
-        key = str(val).lower().replace("_", " ").strip()
-        return _STATUS_ALIASES.get(key)
+        extra_kwargs = {
+            # en création project est requis; en update partiel, DRF gère avec PATCH
+            "assignee": {"required": False, "allow_null": True},
+            "description": {"required": False},
+            "name": {"required": False},
+            "priority": {"required": False},
+            "tag": {"required": False},
+            "status": {"required": False},
+        }
 
     def validate(self, attrs):
-        request = self.context.get("request")
         project = attrs.get("project") or getattr(self.instance, "project", None)
-        assignee = attrs.get("assignee")
-
-        if request and request.user and project:
-            if not Contributor.objects.filter(project=project, user=request.user).exists():
-                raise PermissionDenied("Vous devez être contributeur du projet.")
-
-        if assignee and project and not Contributor.objects.filter(project=project, user=assignee).exists():
-            raise serializers.ValidationError({"assignee": "L'assigné doit être contributeur du projet."})
-
-        status_val = attrs.get("status")
-        if status_val is not None:
-            norm = self._normalize_status(status_val)
-            if norm is None:
-                raise serializers.ValidationError({"status": "Utilise TODO / IN_PROGRESS / DONE."})
-            attrs["status"] = norm
+        assignee = attrs.get("assignee", getattr(self.instance, "assignee", None))
+        if assignee:
+            # l'assigné doit être contributeur du même projet
+            is_contrib = Contributor.objects.filter(project=project, user=assignee).exists()
+            if not is_contrib:
+                raise serializers.ValidationError({"assignee": "Assignee must be a project contributor."})
         return attrs
 
     def create(self, validated_data):
-        request = self.context.get("request")
-        if request and request.user and request.user.is_authenticated:
-            validated_data.setdefault("author", request.user)
+        validated_data["author"] = self.context["request"].user
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data.pop("author", None)
+        return super().update(instance, validated_data)

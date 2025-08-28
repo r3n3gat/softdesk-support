@@ -4,7 +4,7 @@ from .models import Project, Contributor
 class ProjectSerializer(serializers.ModelSerializer):
     # Expose uniquement l'id de l'auteur
     author = serializers.ReadOnlyField(source="author.id")
-    # 'title' sert d'alias d'entrée pour 'name' (utilisé par certains tests)
+    # 'title' sert d'alias d'entrée pour 'name'
     title = serializers.CharField(write_only=True, required=False)
     # Laisse 'type' libre côté API ; la normalisation est faite dans la vue
     type = serializers.CharField(required=False, allow_blank=True, max_length=50)
@@ -13,6 +13,12 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = ["id", "name", "title", "description", "type", "author", "created_time"]
         read_only_fields = ["id", "author", "created_time"]
+        extra_kwargs = {
+            # autorise PATCH partiel sans exiger ces champs
+            "name": {"required": False},
+            "description": {"required": False},
+            "type": {"required": False},
+        }
 
     def validate(self, attrs):
         # Si 'name' absent mais 'title' fourni : mappe vers 'name'

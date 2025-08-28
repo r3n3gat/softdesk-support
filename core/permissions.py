@@ -11,24 +11,15 @@ def _get_project_from_obj(obj):
     return None
 
 def _is_contributor(user, project: Project) -> bool:
+    if not user or not user.is_authenticated or not project:
+        return False
     return Contributor.objects.filter(project=project, user=user).exists()
 
-class IsObjectAuthorOrReadOnly(permissions.BasePermission):
-    """Lecture pour tous les contributeurs, écriture réservée à l’auteur."""
-    def has_object_permission(self, request, view, obj):
-        project = _get_project_from_obj(obj)
-        if request.method in permissions.SAFE_METHODS:
-            return _is_contributor(request.user, project)
-        return getattr(obj, "author_id", None) == getattr(request.user, "id", None)
-
-class IsProjectAuthor(permissions.BasePermission):
-    """L’auteur du projet a tous les droits sur ce projet et ses ressources."""
-    def has_object_permission(self, request, view, obj):
-        project = _get_project_from_obj(obj)
-        return project and project.author_id == getattr(request.user, "id", None)
-
-class IsProjectMemberOrReadOnly(permissions.BasePermission):
-    """Contributeur requis pour lire. Modification : auteur du projet uniquement."""
+class IsAuthorOrReadOnlyWithinProject(permissions.BasePermission):
+    """
+    Lecture: réservée aux contributeurs du projet.
+    Écriture: réservée à l'auteur de l'objet (Issue/Comment).
+    """
     def has_permission(self, request, view):
         return request.user and request.user.is_authenticated
 
@@ -36,8 +27,24 @@ class IsProjectMemberOrReadOnly(permissions.BasePermission):
         project = _get_project_from_obj(obj)
         if request.method in permissions.SAFE_METHODS:
             return _is_contributor(request.user, project)
-        return project and project.author_id == getattr(request.user, "id", None)
+        return getattr(obj, "author_id", None) == getattr(request.user, "id", None)
+
+class IsProjectAuthorOrReadOnly(permissions.BasePermission):
+    """
+    Lecture: réservée aux contributeurs du projet.
+    Écriture: réservée à l'auteur du projet (pour Project).
+    """
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        project = _get_project_from_obj(obj)
+        if request.method in permissions.SAFE_METHODS:
+            return _is_contributor(request.user, project or obj)
+        target = project or obj
+        return getattr(target, "author_id", None) == getattr(request.user, "id", None)
 
 class IsSelf(permissions.BasePermission):
+    """Lecture/écriture autorisées uniquement sur soi-même (ProfileView)."""
     def has_object_permission(self, request, view, obj):
         return obj == request.user
