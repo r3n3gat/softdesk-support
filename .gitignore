@@ -3,53 +3,23 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-dist/
-downloads/
-.eggs/
-*.egg-info/
-*.egg
-sdist/
-.installed.cfg
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.pytest_cache/
-.cache
-.coverage
-.coverage.*
-coverage.xml
-*.cover
-.hypothesis/
+# Virtual env
+.venv/
+.env
+.env.*
+!.env.example
 
 # Django
-*.log
-local_settings.py
 db.sqlite3
-db.sqlite3-journal
 media/
-static/
 staticfiles/
 
-# Environments
-.env
-.venv/
-venv/
-env/
-ENV/
-env.bak/
-venv.bak/
+# Tests / Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.coverage
 
 # IDE / OS
 .vscode/
@@ -57,8 +27,5 @@ venv.bak/
 .DS_Store
 Thumbs.db
 
-# Type checkers / linters
-.mypy_cache/
-.pyre/
-.pytype/
-.ruff_cache/
+# Logs
+*.log

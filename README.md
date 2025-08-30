@@ -5,6 +5,17 @@ Authentification **JWT**, documentation **Swagger/Redoc**, et suite de tests.
 
 ---
 
+## Fonctionnalités clés
+
+- Authentification **JWT** (access/refresh) via `djangorestframework-simplejwt`
+- Rôles & permissions :
+  - Auteur de projet = gestion des contributeurs et ressources du projet
+  - Contributeurs = lecture, et écriture limitée à leurs propres issues/comments
+- Endpoints principaux : **Projects**, **Contributors**, **Issues**, **Comments**
+- Optimisations : `select_related` / `prefetch_related`, pagination **SmartPageNumberPagination** (+ switch `DISABLE_PAGINATION` pour coller aux tests)
+- Documentation intégrée : **Swagger** (`/swagger/`) & **Redoc** (`/redoc/`)
+- Tests Pytest + rapport de couverture **HTML**
+
 ## Sommaire
 
 - [Caractéristiques](#caractéristiques)
@@ -58,13 +69,12 @@ Authentification **JWT**, documentation **Swagger/Redoc**, et suite de tests.
 Cloner le repo et installer les dépendances :
 
 ```bash
-git clone <lien-du-repo>
+git clone <https://github.com/r3n3gat/softdesk-support>
 cd softdesk-support
+poetry install
 ```
 
-## poetry install
-
-Initialiser la base et lancer le serveur : 
+## Initialiser la base et lancer le serveur : 
 ```bash
 # Fichier .env requis (voir section dédiée)
 poetry run python manage.py migrate
@@ -194,7 +204,6 @@ Ouvrir le rapport :
 * Windows PowerShell : Start-Process .\htmlcov\index.html
 
 htmlcov/ est le dossier généré par coverage html contenant le rapport HTML de couverture.
-À ignorer dans Git (cf. .gitignore).
 
 Recommandé dans pytest.ini (pour taire le warning Swagger) :
 
@@ -205,6 +214,14 @@ python_files = tests/test_*.py
 filterwarnings =
     ignore:SwaggerJSONRenderer .* SWAGGER_USE_COMPAT_RENDERERS = False:DeprecationWarning
 ```
+## Postman
+
+Une collection prête à l’emploi est fournie :
+
+Dossier postman/collection Postman.json
+
+Importez-la dans Postman et renseignez vos tokens JWT.
+
 ## Structure du projet
 
 ```bash
@@ -213,12 +230,14 @@ softdesk-support/
 ├── comments/
 ├── issues/
 ├── projects/
-├── softdesk_support/    # settings, urls, wsgi
+├── core/
+├── softdesk_support/   # settings, urls, wsgi
 ├── tests/
 ├── manage.py
-├── pyproject.toml       # Poetry
+├── pyproject.toml     # poetry
 ├── README.md
-└── .env                 # non versionné
+└── .env.example      # non versionné
+
 ```
 
 ## Checklist production (sécurité & green code)
