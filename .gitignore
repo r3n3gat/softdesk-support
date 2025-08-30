@@ -1,45 +1,64 @@
-# --- Python / Django ---
+# Byte-compiled / cache
 __pycache__/
 *.py[cod]
+*$py.class
+
+# C extensions
 *.so
-*.pyd
-*.pyo
 
-# Virtualenv / Poetry
-.venv/
-.venv*/
-.env
-.python-version
+# Distribution / packaging
+.Python
+build/
+dist/
+downloads/
+.eggs/
+*.egg-info/
+*.egg
+sdist/
+.installed.cfg
 
-# Django: static & media (générés localement)
-static/
-media/
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# SQLite local
-*.sqlite3
-db.sqlite3
-
-# Coverage / Tests
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+.cache
 .coverage
 .coverage.*
-htmlcov/
-.pytest_cache/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+static/
+staticfiles/
+
+# Environments
+.env
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 
 # IDE / OS
-.idea/
 .vscode/
+.idea/
 .DS_Store
 Thumbs.db
 
-# Builds / dist
-build/
-dist/
-*.egg-info/
-
-# Cache divers
+# Type checkers / linters
 .mypy_cache/
+.pyre/
+.pytype/
 .ruff_cache/
-.cache/
-
-# Project helpers
-structure.txt
