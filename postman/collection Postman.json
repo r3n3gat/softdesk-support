@@ -1,0 +1,147 @@
+{
+  "info": {
+    "name": "SoftDesk Support API",
+    "_postman_id": "b6b53e9a-9b0e-4c6e-a8b2-111111111111",
+    "description": "Requêtes prêtes pour JWT + CRUD Projects/Issues/Comments/Contributors.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "access_token", "value": "" },
+    { "key": "refresh_token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Obtenir tokens (login)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/token/", "host": ["{{base_url}}"], "path": ["api","token",""] },
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}" }
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "const data = pm.response.json();",
+              "if (data.access) pm.collectionVariables.set('access_token', data.access);",
+              "if (data.refresh) pm.collectionVariables.set('refresh_token', data.refresh);"
+            ]}}
+          ]
+        },
+        {
+          "name": "Refresh token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/token/refresh/", "host": ["{{base_url}}"], "path": ["api","token","refresh",""] },
+            "body": { "mode": "raw", "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}" }
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "const data = pm.response.json();",
+              "if (data.access) pm.collectionVariables.set('access_token', data.access);"
+            ]}}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "Lister projects",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/api/projects/", "host": ["{{base_url}}"], "path": ["api","projects",""] }
+          }
+        },
+        {
+          "name": "Créer project",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/projects/", "host": ["{{base_url}}"], "path": ["api","projects",""] },
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Mon projet\",\n  \"description\": \"Démo\",\n  \"type\": \"Software\"\n}" }
+          }
+        },
+        {
+          "name": "Détail project",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/api/projects/1/", "host": ["{{base_url}}"], "path": ["api","projects","1",""] }
+          }
+        },
+        {
+          "name": "Modifier project (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/projects/1/", "host": ["{{base_url}}"], "path": ["api","projects","1",""] },
+            "body": { "mode": "raw", "raw": "{ \"description\": \"MAJ description\" }" }
+          }
+        },
+        {
+          "name": "Supprimer project",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/api/projects/1/", "host": ["{{base_url}}"], "path": ["api","projects","1",""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Issues",
+      "item": [
+        {
+          "name": "Lister issues",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/api/issues/", "host": ["{{base_url}}"], "path": ["api","issues",""] }
+          }
+        },
+        {
+          "name": "Créer issue",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/api/issues/", "host": ["{{base_url}}"], "path": ["api","issues",""] },
+            "body": { "mode": "raw", "raw": "{\n  \"project\": 1,\n  \"name\": \"Bug A\",\n  \"description\": \"Détail\",\n  \"status\": \"IN_PROGRESS\"\n}" }
+          }
+        },
+        {
+          "name": "Détail issue",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/issues/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "issues",
+                "1",
+                ""
+              ]
+            }
