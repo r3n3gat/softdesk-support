@@ -31,7 +31,7 @@
             "url": "{{base_url}}/api/signup/",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\",\n  \"email\": \"admin@example.com\",\n  \"age\": 25,\n  \"can_be_contacted\": true,\n  \"can_data_be_shared\": false\n}"
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\",\n  \"email\": \"admin@example.com\",\n  \"age\": 25,\n  \"can_be_contacted\": true,\n  \"can_data_be_shared\": false\n}"
             }
           }
         },
@@ -41,7 +41,7 @@
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "url": "{{base_url}}/api/token/",
-            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}" }
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}" }
           },
           "event": [
             {
